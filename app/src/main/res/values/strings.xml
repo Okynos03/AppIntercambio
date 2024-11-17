@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">AppIntercambio</string>
+    <string name="app_name">Intercambio Navideño</string>
+    <string name="titulo_intercambio">Intercambio Navideño</string>
+    <string name="subtitulo_sorteo">Sorteo</string>
+    <string name="instruccion_sorteo">Da click en el botón Sortear para sortear los participantes:</string>
+    <string name="boton_sortear">Sortear</string>
+    <string name="progreso">Progreso: 0%</string>
+    <string name="ver_resultados">Ver resultados</string>
 </resources>
