@@ -1,9 +1,16 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.AppIntercambio" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-    </style>
+<resources>
+    <style name="Theme.AppIntercambio" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Colores principales -->
+        <item name="colorPrimary">@color/navidad_rojo</item>
+        <item name="colorPrimaryDark">@color/navidad_rojo_oscuro</item>
+        <item name="colorAccent">@color/navidad_rojo</item>
 
-    <style name="Theme.AppIntercambio" parent="Base.Theme.AppIntercambio" />
+        <!-- Barra de estado -->
+        <item name="android:statusBarColor">@color/navidad_rojo</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <!-- Referencia a los estilos de los pickers -->
+        <item name="android:datePickerDialogTheme">@style/NavidadPickerTheme</item>
+        <item name="android:timePickerDialogTheme">@style/NavidadPickerTheme</item>
+    </style>
 </resources>

@@ -2,4 +2,8 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="navidad_rojo">#C41E3A</color>
+    <color name="navidad_rojo_oscuro">#9B1C1C</color>
+    <color name="navidad_verde">#146B3A</color>
+
 </resources>

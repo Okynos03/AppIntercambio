@@ -1,0 +1,37 @@
+<resources>
+    <!-- Estilo personalizado para los Pickers -->
+    <style name="NavidadPickerTheme" parent="Theme.MaterialComponents.Light.Dialog">
+        <!-- Colores principales -->
+        <item name="colorPrimary">@color/navidad_rojo</item>
+        <item name="colorPrimaryDark">@color/navidad_rojo_oscuro</item>
+        <item name="colorAccent">@color/navidad_rojo</item>
+
+        <!-- Fondo y bordes -->
+        <item name="android:windowBackground">@drawable/picker_background</item>
+        <item name="android:windowIsFloating">true</item>
+
+        <!-- Colores de texto -->
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorSecondary">@color/black</item>
+
+        <!-- Referencia a los estilos de botones -->
+        <item name="android:buttonBarButtonStyle">@style/NavidadDialogButtonStyle</item>
+        <item name="buttonBarNeutralButtonStyle">@style/NavidadDialogButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/NavidadDialogButtonStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/NavidadDialogButtonStyle</item>
+        <item name="materialButtonStyle">@style/NavidadDialogButtonStyle</item>
+    </style>
+
+    <!-- Estilo para los botones del picker -->
+    <style name="NavidadDialogButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/navidad_rojo</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:minWidth">64dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+    </style>
+</resources>
