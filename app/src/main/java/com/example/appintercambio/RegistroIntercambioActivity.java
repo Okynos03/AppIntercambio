@@ -24,6 +24,9 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -254,4 +257,5 @@ public class RegistroIntercambioActivity  extends AppCompatActivity {
         Log.d("INFO_CAMPOS", "Precio Mínimo: " + editTextPrecioMinimo.getText().toString().trim());
         Log.d("INFO_CAMPOS", "Precio Máximo: " + editTextPrecioMaximo.getText().toString().trim());
     }
+
 }

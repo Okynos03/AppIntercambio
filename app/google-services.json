@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1050444859581",
+    "firebase_url": "https://intercambio-b91c0-default-rtdb.firebaseio.com",
+    "project_id": "intercambio-b91c0",
+    "storage_bucket": "intercambio-b91c0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1050444859581:android:f9de8eed4ccc89915d0fd4",
+        "android_client_info": {
+          "package_name": "com.example.appintercambio"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVqYy659n3nobAJJdTCzzzTgJS5OCrVRk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
