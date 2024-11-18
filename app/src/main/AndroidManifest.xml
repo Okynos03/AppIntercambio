@@ -23,9 +23,9 @@
             </intent-filter>
         </activity>
 
-        <activity
+        <!--<activity
             android:name=".RegistroIntercambioActivity"
-            android:exported="false" />
+            android:exported="false" />-->
     </application>
 
 </manifest>
