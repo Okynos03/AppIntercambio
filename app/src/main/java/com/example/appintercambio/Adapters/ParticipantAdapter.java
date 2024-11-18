@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.example.appintercambio.Models.Exchange;
 import com.example.appintercambio.Models.Participant;
 import com.google.firebase.database.FirebaseDatabase;
 
