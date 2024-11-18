@@ -14,7 +14,7 @@
         android:theme="@style/Theme.AppIntercambio"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity"
+            android:name=".RegistroIntercambioActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,6 +26,10 @@
         <!--<activity
             android:name=".RegistroIntercambioActivity"
             android:exported="false" />-->
+
+        <activity
+           android:name=".RaffleActivity"
+           android:exported="false" />
     </application>
 
 </manifest>

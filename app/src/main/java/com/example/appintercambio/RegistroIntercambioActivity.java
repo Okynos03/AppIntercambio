@@ -7,6 +7,8 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -47,6 +49,7 @@ public class RegistroIntercambioActivity  extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro_intercambio);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         initializeViews();
         setupTextFields();
@@ -184,6 +187,8 @@ public class RegistroIntercambioActivity  extends AppCompatActivity {
         });*/
         buttonContinuar.setOnClickListener(v -> {
             printFieldsInfo();
+            Intent intent = new Intent(this, RaffleActivity.class);
+            startActivity(intent);
         });
     }
 
@@ -256,6 +261,14 @@ public class RegistroIntercambioActivity  extends AppCompatActivity {
         Log.d("INFO_CAMPOS", "Hora: " + editTextHora.getText().toString().trim());
         Log.d("INFO_CAMPOS", "Precio Mínimo: " + editTextPrecioMinimo.getText().toString().trim());
         Log.d("INFO_CAMPOS", "Precio Máximo: " + editTextPrecioMaximo.getText().toString().trim());
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
 }
