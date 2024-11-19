@@ -163,15 +163,64 @@ public class RegistroIntercambioActivity  extends AppCompatActivity {
     }
 
     private void setupButtons() {
-
         //buttonContinuar.setBackgroundColor(getResources().getColor(R.color.nobutton));
         buttonContinuar.setOnClickListener(v -> {
-            printFieldsInfo();
-            vibrate();
-            insert();
-            Intent intent = new Intent(this, RaffleActivity.class);
-            startActivity(intent);
+            if(validateFields()) {
+                printFieldsInfo();
+                vibrate();
+                insert();
+                Intent intent = new Intent(this, RaffleActivity.class);
+                startActivity(intent);
+            }
         });
+    }
+
+    private boolean validateFields() {
+        boolean isValid = true;
+
+        if(editTextLugar.getText().toString().trim().isEmpty()) {
+            editTextLugar.setError("Campo requerido");
+            isValid = false;
+        }
+        if(editTextFecha.getText().toString().trim().isEmpty()) {
+            editTextFecha.setError("Campo requerido");
+            isValid = false;
+        }
+        if(editTextHora.getText().toString().trim().isEmpty()) {
+            editTextHora.setError("Campo requerido");
+            isValid = false;
+        }
+
+        if(editTextPrecioMinimo.getText().toString().trim().isEmpty()) {
+            editTextPrecioMinimo.setError("Campo requerido");
+            isValid = false;
+        }
+        if(editTextPrecioMaximo.getText().toString().trim().isEmpty()) {
+            editTextPrecioMaximo.setError("Campo requerido");
+            isValid = false;
+        }
+
+        if (!editTextPrecioMinimo.getText().toString().trim().isEmpty() &&
+                !editTextPrecioMaximo.getText().toString().trim().isEmpty()) {
+            try {
+                String minStr = editTextPrecioMinimo.getText().toString().replaceAll("[^\\d]", "");
+                String maxStr = editTextPrecioMaximo.getText().toString().replaceAll("[^\\d]", "");
+                int precioMin = Integer.parseInt(minStr);
+                int precioMax = Integer.parseInt(maxStr);
+
+                if (precioMin >= precioMax) {
+                    editTextPrecioMinimo.setError("El precio mínimo debe ser menor al máximo");
+                    editTextPrecioMaximo.setError("El precio máximo debe ser mayor al mínimo");
+                    isValid = false;
+                }
+            } catch (NumberFormatException e) {
+                editTextPrecioMinimo.setError("Precio inválido");
+                editTextPrecioMaximo.setError("Precio inválido");
+                isValid = false;
+            }
+        }
+
+        return isValid;
     }
 
     private void vibrate() {
