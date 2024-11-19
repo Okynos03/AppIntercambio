@@ -286,19 +286,49 @@ public class RegistroIntercambioActivity  extends AppCompatActivity {
         String maxPriceString = editTextPrecioMinimo.getText().toString().trim();
         int maxPrice = Integer.parseInt(maxPriceString);
 
-        Exchange exchange = new Exchange(1, theme, location, date, time, minPrice, maxPrice);
+        if (validateFields(theme, date, location, time, minPriceString, maxPriceString)) {
+            Exchange exchange = new Exchange(1, theme, location, date, time, minPrice, maxPrice);
 
-        DatabaseReference ref = db.getReference("evento/" + exchange.getId());
+            DatabaseReference ref = db.getReference("evento/" + exchange.getId());
 
-        ref.setValue(exchange).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), "Evento registrado con éxito", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Error al registrar evento", Toast.LENGTH_SHORT).show();
+            ref.setValue(exchange).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(getApplicationContext(), "Evento registrado con éxito", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Error al registrar evento", Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
-        });
+            });
+        }
+    }
+
+    private boolean validateFields(String theme,String date, String location, String time, String minPriceString, String maxPriceString) {
+        if (theme.isEmpty() && date.isEmpty() && location.isEmpty() && time.isEmpty() && minPriceString.isEmpty() && maxPriceString.isEmpty()) {
+            Toast.makeText(this, "Por favor, ingresa datos válidos", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (theme.isEmpty() && date.isEmpty() && location.isEmpty() && time.isEmpty() && minPriceString.isEmpty()) {
+            Toast.makeText(this, "Por favor, ingresa datos válidos", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (theme.isEmpty() && date.isEmpty() && location.isEmpty() && time.isEmpty()) {
+            Toast.makeText(this, "Por favor, ingresa datos válidos", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (theme.isEmpty() && date.isEmpty() && location.isEmpty()) {
+            Toast.makeText(this, "Por favor, ingresa datos válidos", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (theme.isEmpty() && date.isEmpty()) {
+            Toast.makeText(this, "Por favor, ingresa datos válidos", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (theme.isEmpty()) {
+            Toast.makeText(this, "Por favor, ingresa datos válidos", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true; // Si todas las validaciones pasan
     }
 }
