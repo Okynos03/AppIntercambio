@@ -75,7 +75,7 @@ public class RegistroParticipantesActivity  extends AppCompatActivity {
         buttonRegistrarParticipante.setOnClickListener(v -> {
             vibrate();
             printFieldsInfo();
-            RegParticipant();
+            insert();
         });
     }
 
@@ -91,10 +91,7 @@ public class RegistroParticipantesActivity  extends AppCompatActivity {
         Log.d("INFO_CAMPOS", "Correo: " + editTextCorreo.getText().toString().trim());
     }
 
-    private void RegParticipant() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference participantRef = database.getReference("participante");
-
+    private void insert(){
         String name = editTextNombre.getText().toString().trim();
         String email = editTextCorreo.getText().toString().trim();
 
@@ -113,55 +110,25 @@ public class RegistroParticipantesActivity  extends AppCompatActivity {
             return;
         }
 
-        /* //deshabilita el boton pero lo logro que funcione
-        View.OnFocusChangeListener focusChangeListener = new View.OnFocusChangeListener() {
+        Participant participant = new Participant(createId(), email, name);
+        DatabaseReference ref = db.getReference("participante/" + participant.getId());
+
+        ref.setValue(participant).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus)
-            {
-                if (!hasFocus) { // Se ejecuta cuando el campo pierde el foco
-                    validateFields();
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), "Participante registrado con éxito", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Error al registrar participante", Toast.LENGTH_SHORT).show();
                 }
             }
-        };
-
-        editTextNombre.setOnFocusChangeListener(focusChangeListener);
-        editTextCorreo.setOnFocusChangeListener(focusChangeListener);
-
-         */
-
-        int idParticipant = createId();
-
-        Map<String, Object> datosParticipante = new HashMap<>();
-        datosParticipante.put("name", name);
-        datosParticipante.put("email", email);
-
-        participantRef.child(String.valueOf(idParticipant)).setValue(datosParticipante)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Participante registrado", Toast.LENGTH_SHORT).show();
-                    editTextNombre.setText("");
-                    editTextCorreo.setText("");
-                    if(lastId > 1){
-                        buttonContinuarP.setBackgroundColor(getResources().getColor(R.color.button));
-                        buttonContinuarP.setEnabled(true);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error al registrar participante", Toast.LENGTH_SHORT).show();
-                    Log.e("FirebaseError", "Error al guardar participante: " + e.getMessage());
-                });
+        });
     }
 
     private int createId(){
         lastId++;
         return lastId;
     }
-
-    /*private void validateFields() {
-        boolean validName = !editTextNombre.getText().toString().trim().isEmpty();
-        boolean validEmail = !editTextCorreo.getText().toString().trim().isEmpty();
-        buttonRegistrarParticipante.setEnabled(validName && validEmail);
-    }
-     */
 
     private void validateShow(){
         if(participants.size() > 1){
