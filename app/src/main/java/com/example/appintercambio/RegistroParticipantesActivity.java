@@ -95,39 +95,47 @@ public class RegistroParticipantesActivity  extends AppCompatActivity {
         String name = editTextNombre.getText().toString().trim();
         String email = editTextCorreo.getText().toString().trim();
 
-        if (name.isEmpty() && email.isEmpty()) {
-            Toast.makeText(this, "Por favor, ingresa un nombre y un correo electrónico", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        if (validateFields(name, email)) {
 
-        if (name.isEmpty()) {
-            Toast.makeText(this, "Por favor, ingresa un nombre", Toast.LENGTH_SHORT).show();
-            return;
-        }
+            Participant participant = new Participant(createId(), email, name);
+            DatabaseReference ref = db.getReference("participante/" + participant.getId());
 
-        if (email.isEmpty()) {
-            Toast.makeText(this, "Por favor, ingresa un correo electrónico", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        Participant participant = new Participant(createId(), email, name);
-        DatabaseReference ref = db.getReference("participante/" + participant.getId());
-
-        ref.setValue(participant).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), "Participante registrado con éxito", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "Error al registrar participante", Toast.LENGTH_SHORT).show();
+            ref.setValue(participant).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(getApplicationContext(), "Participante registrado con éxito", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Error al registrar participante", Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     private int createId(){
         lastId++;
         return lastId;
+    }
+
+    private boolean validateFields(String name, String email) {
+        if (name.isEmpty() && email.isEmpty()) {
+            Toast.makeText(this, "Por favor, ingresa un nombre y un correo electrónico", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (name.isEmpty()) {
+            Toast.makeText(this, "Por favor, ingresa un nombre", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (email.isEmpty()) {
+            Toast.makeText(this, "Por favor, ingresa un correo electrónico", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (!email.matches(".+@.+\\..+")) {
+            Toast.makeText(this, "Por favor, ingresa un correo electrónico válido", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true; // Si todas las validaciones pasan
     }
 
     private void validateShow(){

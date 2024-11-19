@@ -1,5 +1,6 @@
 package com.example.appintercambio;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import android.annotation.SuppressLint;
@@ -10,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -24,16 +26,25 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.example.appintercambio.Models.Exchange;
+import com.example.appintercambio.Models.Participant;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class RegistroIntercambioActivity  extends AppCompatActivity {
@@ -44,6 +55,13 @@ public class RegistroIntercambioActivity  extends AppCompatActivity {
     private EditText editTextLugar;
     private EditText editTextPrecioMinimo;
     private EditText editTextPrecioMaximo;
+
+    private static int lastId = 0;
+
+    //Firebase stuff
+    private FirebaseDatabase db = FirebaseDatabase.getInstance();
+    private List<Participant> participants = new ArrayList<>();
+    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +74,7 @@ public class RegistroIntercambioActivity  extends AppCompatActivity {
         setupDateField();
         setupTimeField();
         setupPriceFields();
-        setupValidations();
+        setupButtons();
     }
 
     private void initializeViews() {
@@ -68,7 +86,6 @@ public class RegistroIntercambioActivity  extends AppCompatActivity {
         editTextPrecioMinimo = findViewById(R.id.editTextPrecioMinimo);
         editTextPrecioMaximo = findViewById(R.id.editTextPrecioMaximo);
     }
-
 
     private void setupTextFields() {
         // Listener para cuando pierden el foco
@@ -157,7 +174,24 @@ public class RegistroIntercambioActivity  extends AppCompatActivity {
         editTextPrecioMaximo.setOnEditorActionListener(editorActionListener);
     }
 
+    private void setupButtons() {
 
+        //buttonContinuar.setBackgroundColor(getResources().getColor(R.color.nobutton));
+        buttonContinuar.setOnClickListener(v -> {
+            printFieldsInfo();
+            vibrate();
+            insert();
+            Intent intent = new Intent(this, RaffleActivity.class);
+            startActivity(intent);
+        });
+
+    }
+
+    private void vibrate() {
+        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        long[] pattern = {0, 0, 20, 0, 0, 20};
+        vibrator.vibrate(pattern, -1);
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     private void setupDateField() {
@@ -179,19 +213,6 @@ public class RegistroIntercambioActivity  extends AppCompatActivity {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    private void setupValidations() {
-        /*buttonContinuar.setOnClickListener(v -> {
-            *if(validateFields()) {
-                // Aqui se pude usar para continuar a otra pantalla
-            }
-        });*/
-        buttonContinuar.setOnClickListener(v -> {
-            printFieldsInfo();
-            Intent intent = new Intent(this, RaffleActivity.class);
-            startActivity(intent);
-        });
-    }
-
     private void showDatePicker() {
         DatePickerFragment datePickerFragment = new DatePickerFragment();
         datePickerFragment.show(getSupportFragmentManager(), "datePicker");
@@ -202,9 +223,7 @@ public class RegistroIntercambioActivity  extends AppCompatActivity {
         timePickerFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
-
-    public static class DatePickerFragment extends DialogFragment
-            implements DatePickerDialog.OnDateSetListener {
+    public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -226,8 +245,7 @@ public class RegistroIntercambioActivity  extends AppCompatActivity {
         }
     }
 
-    public static class TimePickerFragment extends DialogFragment
-            implements TimePickerDialog.OnTimeSetListener {
+    public static class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -269,6 +287,37 @@ public class RegistroIntercambioActivity  extends AppCompatActivity {
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    private void insert(){
+        String theme = editTextTematica.getText().toString().trim();
+        String date = editTextTematica.getText().toString().trim();
+        String location = editTextLugar.getText().toString().trim();
+        String time = editTextHora.getText().toString().trim();
+        String minPriceString = editTextPrecioMinimo.getText().toString().trim();
+        int minPrice = Integer.parseInt(minPriceString);
+        String maxPriceString = editTextPrecioMinimo.getText().toString().trim();
+        int maxPrice = Integer.parseInt(maxPriceString);
+
+        Exchange exchange = new Exchange(createId(), theme, location, date, time, minPrice, maxPrice);
+
+        DatabaseReference ref = db.getReference("evento/" + exchange.getId());
+
+        ref.setValue(exchange).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), "Evento registrado con éxito", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Error al registrar evento", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private int createId(){
+        lastId++;
+        return lastId;
     }
 
 }

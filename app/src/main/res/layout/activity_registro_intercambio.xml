@@ -109,7 +109,7 @@
                 android:layout_marginBottom="16dp"
                 android:textColor="#000000"
                 android:inputType="text"
-                android:imeOptions="actionDone"
+                android:imeOptions="actionNext"
                 android:singleLine="true"/>
 
             <TextView
@@ -130,7 +130,7 @@
                 android:layout_marginBottom="16dp"
                 android:textColor="#000000"
                 android:inputType="text"
-                android:imeOptions="actionDone"
+                android:imeOptions="actionNext"
                 android:singleLine="true"/>
 
             <TextView
@@ -222,6 +222,7 @@
                             android:layout_height="wrap_content"
                             android:background="@null"
                             android:inputType="number"
+                            android:imeOptions="actionNext"
                             android:textColor="#000000"/>
                     </LinearLayout>
                 </LinearLayout>
@@ -262,6 +263,7 @@
                             android:layout_height="wrap_content"
                             android:background="@null"
                             android:inputType="number"
+                            android:imeOptions="actionDone"
                             android:textColor="#000000"/>
                     </LinearLayout>
                 </LinearLayout>
