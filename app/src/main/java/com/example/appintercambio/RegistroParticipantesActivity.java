@@ -23,7 +23,7 @@ import java.util.List;
 
 public class RegistroParticipantesActivity  extends AppCompatActivity {
 
-    private static int lastId = 0;
+    private int lastId = 0;
 
     private EditText editTextNombre;
     private EditText editTextCorreo;
@@ -96,6 +96,12 @@ public class RegistroParticipantesActivity  extends AppCompatActivity {
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()) {
                         Toast.makeText(getApplicationContext(), "Participante registrado con éxito", Toast.LENGTH_SHORT).show();
+                        editTextCorreo.setText("");
+                        editTextNombre.setText("");
+                        if(lastId > 1){
+                            buttonContinuarP.setEnabled(true);
+                            buttonContinuarP.setBackgroundColor(getResources().getColor(R.color.button));
+                        }
                     } else {
                         Toast.makeText(getApplicationContext(), "Error al registrar participante", Toast.LENGTH_SHORT).show();
                     }
@@ -130,6 +136,7 @@ public class RegistroParticipantesActivity  extends AppCompatActivity {
     }
 
     private void validateShow(){
+        this.lastId = participants.size();
         if(participants.size() > 1){
             Intent intent = new Intent(this, RegistroIntercambioActivity.class);
             startActivity(intent);
