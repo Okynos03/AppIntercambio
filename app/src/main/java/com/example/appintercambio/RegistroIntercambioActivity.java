@@ -25,10 +25,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.example.appintercambio.Adapters.ExchangeAdapter;
 import com.example.appintercambio.Models.Exchange;
 import com.example.appintercambio.Models.Participant;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import java.text.SimpleDateFormat;
@@ -45,6 +49,7 @@ public class RegistroIntercambioActivity  extends AppCompatActivity {
     private EditText editTextLugar;
     private EditText editTextPrecioMinimo;
     private EditText editTextPrecioMaximo;
+    private int n_exchange = 0;
 
     //Firebase stuff
     private FirebaseDatabase db = FirebaseDatabase.getInstance();
@@ -56,6 +61,8 @@ public class RegistroIntercambioActivity  extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro_intercambio);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        select();
 
         initializeViews();
         setupTextFields();
@@ -380,4 +387,41 @@ public class RegistroIntercambioActivity  extends AppCompatActivity {
         }
         return true; // Si todas las validaciones pasan
     }
+
+    private void validateShow(){
+        if(n_exchange > 0){
+            Intent intent = new Intent(this, RaffleActivity.class); //cambiar en siguiente sprint
+            startActivity(intent);
+        }
+    }
+
+    private void select() {
+        DatabaseReference ref = db.getReference("evento/");
+
+        ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DataSnapshot snapshot = task.getResult();
+
+                    for (DataSnapshot item : snapshot.getChildren()) {
+                        try {
+                            if (item.exists() && item.hasChildren()) {
+                                n_exchange++;
+                            } else {
+                                Log.w("FirebaseWarning", "Empty or invalid exchange data: " + item.getKey());
+                            }
+                        } catch (DatabaseException e) {
+                            Log.e("FirebaseError", "Error converting data: " + e.getMessage());
+                            Log.e("FirebaseError", "DataSnapshot value: " + item.getValue());
+                        }
+                    }
+                } else {
+                    Log.e("FirebaseError", "Error getting data: " + task.getException());
+                }
+                validateShow();
+            }
+        });
+    }
+
 }

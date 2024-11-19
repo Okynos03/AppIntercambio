@@ -2,6 +2,7 @@ package com.example.appintercambio;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
@@ -41,6 +42,8 @@ public class RegistroParticipantesActivity  extends AppCompatActivity {
         setContentView(R.layout.activity_registro_participantes);
         initializeViews();
         setupButtons();
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         select();//to know if this activity should be shown
     }
