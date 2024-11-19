@@ -12,14 +12,9 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.InputType;
-import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -30,17 +25,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
 import com.example.appintercambio.Models.Exchange;
 import com.example.appintercambio.Models.Participant;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -55,8 +45,6 @@ public class RegistroIntercambioActivity  extends AppCompatActivity {
     private EditText editTextLugar;
     private EditText editTextPrecioMinimo;
     private EditText editTextPrecioMaximo;
-
-    private static int lastId = 0;
 
     //Firebase stuff
     private FirebaseDatabase db = FirebaseDatabase.getInstance();
@@ -184,7 +172,6 @@ public class RegistroIntercambioActivity  extends AppCompatActivity {
             Intent intent = new Intent(this, RaffleActivity.class);
             startActivity(intent);
         });
-
     }
 
     private void vibrate() {
@@ -299,7 +286,7 @@ public class RegistroIntercambioActivity  extends AppCompatActivity {
         String maxPriceString = editTextPrecioMinimo.getText().toString().trim();
         int maxPrice = Integer.parseInt(maxPriceString);
 
-        Exchange exchange = new Exchange(createId(), theme, location, date, time, minPrice, maxPrice);
+        Exchange exchange = new Exchange(1, theme, location, date, time, minPrice, maxPrice);
 
         DatabaseReference ref = db.getReference("evento/" + exchange.getId());
 
@@ -314,10 +301,4 @@ public class RegistroIntercambioActivity  extends AppCompatActivity {
             }
         });
     }
-
-    private int createId(){
-        lastId++;
-        return lastId;
-    }
-
 }

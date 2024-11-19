@@ -5,18 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.example.appintercambio.Adapters.ExchangeAdapter;
-import com.example.appintercambio.Adapters.ParticipantAdapter;
-import com.example.appintercambio.Models.Exchange;
 import com.example.appintercambio.Models.Participant;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -24,11 +18,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class RegistroParticipantesActivity  extends AppCompatActivity {
 
@@ -178,5 +169,4 @@ public class RegistroParticipantesActivity  extends AppCompatActivity {
             }
         });
     }
-
 }
