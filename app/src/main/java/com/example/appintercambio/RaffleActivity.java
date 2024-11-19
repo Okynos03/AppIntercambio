@@ -1,5 +1,6 @@
 package com.example.appintercambio;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -32,6 +34,7 @@ public class RaffleActivity extends AppCompatActivity {
     private raffle_algorithm sorteo;
     private List<Participant> participantList = new ArrayList<>();
     private FirebaseDatabase db = FirebaseDatabase.getInstance();
+    private int n_sorteo = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,15 +64,16 @@ public class RaffleActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isRaffleCompleted) {
-                    System.out.println("holaaaaaaaa");
-                    // Intent intent = new Intent(RaffleActivity.this, ResultadoActivity.class);
-                    // startActivity(intent);
+                    Intent intent = new Intent(RaffleActivity.this, RaffleResults.class);
+                    startActivity(intent);
                 } else {
                     Toast.makeText(RaffleActivity.this, "Debes realizar el sorteo antes de ver los resultados",
                             Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
+        select();//To verify if a raffle was done
     }
 
     @Override
@@ -197,8 +201,45 @@ public class RaffleActivity extends AppCompatActivity {
     private void setButtonState(Button button, boolean enabled) {
         button.setEnabled(enabled);
         if (!enabled) {  // Solo cuando está deshabilitado
-            button.setBackgroundTintList(ColorStateList.valueOf(Color.GRAY));
+            button.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.nobutton)));
             button.setAlpha(0.5f);
         }
+    }
+
+    private void validateShow(){
+        if(n_sorteo > 0){
+            Intent intent = new Intent(this, RaffleResults.class);
+            startActivity(intent);
+        }
+    }
+
+    private void select() {
+        DatabaseReference ref = db.getReference("sorteo/");
+
+        ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DataSnapshot snapshot = task.getResult();
+
+                    for (DataSnapshot item : snapshot.getChildren()) {
+                        try {
+                            if (item.exists() && item.hasChildren()) {
+                                n_sorteo++;
+                            } else {
+                                Log.w("FirebaseWarning", "Empty or invalid exchange data: " + item.getKey());
+                            }
+                        } catch (DatabaseException e) {
+                            Log.e("FirebaseError", "Error converting data: " + e.getMessage());
+                            Log.e("FirebaseError", "DataSnapshot value: " + item.getValue());
+                        }
+                    }
+
+                } else {
+                    Log.e("FirebaseError", "Error getting data: " + task.getException());
+                }
+                validateShow();
+            }
+        });
     }
 }

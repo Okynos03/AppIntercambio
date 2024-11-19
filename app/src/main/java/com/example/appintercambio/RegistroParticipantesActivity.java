@@ -1,17 +1,33 @@
 package com.example.appintercambio;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.appintercambio.Adapters.ExchangeAdapter;
+import com.example.appintercambio.Adapters.ParticipantAdapter;
+import com.example.appintercambio.Models.Exchange;
+import com.example.appintercambio.Models.Participant;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseException;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RegistroParticipantesActivity  extends AppCompatActivity {
@@ -23,12 +39,19 @@ public class RegistroParticipantesActivity  extends AppCompatActivity {
     private Button buttonRegistrarParticipante;
     private Button buttonContinuarP;
 
+    //Firebase stuff
+    private FirebaseDatabase db = FirebaseDatabase.getInstance();
+    private List<Participant> participants = new ArrayList<>();
+    private ListView listView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro_participantes);
         initializeViews();
         setupButtons();
+
+        select();//to know if this activity should be shown
     }
 
     private void initializeViews() {
@@ -40,14 +63,19 @@ public class RegistroParticipantesActivity  extends AppCompatActivity {
 
     private void setupButtons() {
         //buttonRegistrarParticipante.setEnabled(false);
+
+        buttonContinuarP.setEnabled(false);
+        buttonContinuarP.setBackgroundColor(getResources().getColor(R.color.nobutton));
+        buttonContinuarP.setOnClickListener(v -> {
+            vibrate();
+            Intent intent = new Intent(this, RegistroIntercambioActivity.class);
+            startActivity(intent);
+        });
+
         buttonRegistrarParticipante.setOnClickListener(v -> {
             vibrate();
             printFieldsInfo();
             RegParticipant();
-        });
-        buttonContinuarP.setOnClickListener(v -> {
-            vibrate();
-            printFieldsInfo();
         });
     }
 
@@ -112,6 +140,10 @@ public class RegistroParticipantesActivity  extends AppCompatActivity {
                     Toast.makeText(this, "Participante registrado", Toast.LENGTH_SHORT).show();
                     editTextNombre.setText("");
                     editTextCorreo.setText("");
+                    if(lastId > 1){
+                        buttonContinuarP.setBackgroundColor(getResources().getColor(R.color.button));
+                        buttonContinuarP.setEnabled(true);
+                    }
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Error al registrar participante", Toast.LENGTH_SHORT).show();
@@ -130,5 +162,46 @@ public class RegistroParticipantesActivity  extends AppCompatActivity {
         buttonRegistrarParticipante.setEnabled(validName && validEmail);
     }
      */
+
+    private void validateShow(){
+        if(participants.size() > 1){
+            Intent intent = new Intent(this, RegistroIntercambioActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    private void select() {
+        DatabaseReference ref = db.getReference("participante/");
+
+        ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DataSnapshot snapshot = task.getResult();
+                    participants.clear();
+
+                    for (DataSnapshot item : snapshot.getChildren()) {
+                        try {
+                            if (item.exists() && item.hasChildren()) {
+                                Participant participant = item.getValue(Participant.class);
+                                participants.add(participant);
+                            } else {
+                                Log.w("FirebaseWarning", "Empty or invalid exchange data: " + item.getKey());
+                            }
+                        } catch (DatabaseException e) {
+                            Log.e("FirebaseError", "Error converting data: " + e.getMessage());
+                            Log.e("FirebaseError", "DataSnapshot value: " + item.getValue());
+                        }
+                    }
+                    //ParticipantAdapter adapter = new ParticipantAdapter(RegistroParticipantesActivity.this, participants);
+                    //listView.setAdapter(adapter);
+
+                } else {
+                    Log.e("FirebaseError", "Error getting data: " + task.getException());
+                }
+                validateShow();
+            }
+        });
+    }
 
 }

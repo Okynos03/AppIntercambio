@@ -5,5 +5,8 @@
     <color name="navidad_rojo">#C41E3A</color>
     <color name="navidad_rojo_oscuro">#9B1C1C</color>
     <color name="navidad_verde">#146B3A</color>
+    <color name="button">#C5FDC3</color>
+    <color name="nobutton">#D3D3D3</color>
+
 
 </resources>
