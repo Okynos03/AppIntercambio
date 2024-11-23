@@ -176,7 +176,7 @@ public class RegistroIntercambioActivity  extends AppCompatActivity {
                 printFieldsInfo();
                 vibrate();
                 insert();
-                Intent intent = new Intent(this, RaffleActivity.class);
+                Intent intent = new Intent(this, ParticipantsListActivity.class);
                 startActivity(intent);
             }
         });
@@ -337,9 +337,9 @@ public class RegistroIntercambioActivity  extends AppCompatActivity {
         String date = editTextTematica.getText().toString().trim();
         String location = editTextLugar.getText().toString().trim();
         String time = editTextHora.getText().toString().trim();
-        String minPriceString = editTextPrecioMinimo.getText().toString().trim();
+        String minPriceString = editTextPrecioMinimo.getText().toString().trim().replaceAll("[^\\d]", "");
         int minPrice = Integer.parseInt(minPriceString);
-        String maxPriceString = editTextPrecioMinimo.getText().toString().trim();
+        String maxPriceString = editTextPrecioMinimo.getText().toString().trim().replaceAll("[^\\d]", "");
         int maxPrice = Integer.parseInt(maxPriceString);
 
         if (validateFields(theme, date, location, time, minPriceString, maxPriceString)) {

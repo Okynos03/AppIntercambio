@@ -29,6 +29,11 @@
         <activity
             android:name=".RegistroIntercambioActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".ParticipantsListActivity"
+            android:exported="false" />
+
         <activity
             android:name=".RaffleActivity"
             android:exported="false" />
