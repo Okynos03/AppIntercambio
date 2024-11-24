@@ -64,7 +64,7 @@ public class RaffleActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isRaffleCompleted) {
-                    Intent intent = new Intent(RaffleActivity.this, RaffleResults.class);
+                    Intent intent = new Intent(RaffleActivity.this, RaffleInfoActivity.class);
                     startActivity(intent);
                 } else {
                     Toast.makeText(RaffleActivity.this, "Debes realizar el sorteo antes de ver los resultados",
@@ -208,7 +208,7 @@ public class RaffleActivity extends AppCompatActivity {
 
     private void validateShow(){
         if(n_sorteo > 0){
-            Intent intent = new Intent(this, RaffleResults.class);
+            Intent intent = new Intent(this, RaffleInfoActivity.class);
             startActivity(intent);
         }
     }
