@@ -334,12 +334,12 @@ public class RegistroIntercambioActivity  extends AppCompatActivity {
 
     private void insert(){
         String theme = editTextTematica.getText().toString().trim();
-        String date = editTextTematica.getText().toString().trim();
+        String date = editTextFecha.getText().toString().trim();
         String location = editTextLugar.getText().toString().trim();
         String time = editTextHora.getText().toString().trim();
         String minPriceString = editTextPrecioMinimo.getText().toString().trim().replaceAll("[^\\d]", "");
         int minPrice = Integer.parseInt(minPriceString);
-        String maxPriceString = editTextPrecioMinimo.getText().toString().trim().replaceAll("[^\\d]", "");
+        String maxPriceString = editTextPrecioMaximo.getText().toString().trim().replaceAll("[^\\d]", "");
         int maxPrice = Integer.parseInt(maxPriceString);
 
         if (validateFields(theme, date, location, time, minPriceString, maxPriceString)) {

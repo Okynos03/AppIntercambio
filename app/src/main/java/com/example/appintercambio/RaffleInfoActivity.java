@@ -1,6 +1,8 @@
 package com.example.appintercambio;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -25,6 +27,8 @@ public class RaffleInfoActivity extends AppCompatActivity {
     private LinearLayout resultListLayout;
     private DatabaseReference dbReference;
     private Button buttonContinuar;
+    private Button buttonGenerarEmail;
+    private EmailGenerator emailGenerator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,17 +37,83 @@ public class RaffleInfoActivity extends AppCompatActivity {
 
         buttonContinuar = findViewById(R.id.buttonContinuar);
         resultListLayout = findViewById(R.id.resultListLayout);
+        buttonGenerarEmail = findViewById(R.id.buttonGenerarEmail);
+        emailGenerator = new EmailGenerator();
 
         // Inicializa la referencia a Firebase
         dbReference = FirebaseDatabase.getInstance().getReference("sorteo");
 
+        setupButtons();
         // Carga los datos del sorteo
         loadRaffleResults();
 
-        buttonContinuar.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Poner aquí la conexion del botón continuar
+    }
+
+    private void setupButtons() {
+        buttonGenerarEmail.setOnClickListener(v -> generateEmails());
+        buttonContinuar.setOnClickListener(v -> {
+            // Lógica para el botón continuar
+        });
+    }
+
+    private void setButtonState(Button button, boolean enabled) {
+        button.setEnabled(enabled);
+        if (!enabled) {  // Solo cuando está deshabilitado
+            button.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.nobutton)));
+            button.setAlpha(0.5f);
+        }
+    }
+
+
+    private void generateEmails() {
+        // Deshabilitar el botón inmediatamente después del clic
+        setButtonState(buttonGenerarEmail, false);
+
+        Toast.makeText(this, "Generando correos...", Toast.LENGTH_SHORT).show();
+
+        emailGenerator.generateEmails(emailDataList -> {
+            if (emailDataList != null && !emailDataList.isEmpty()) {
+                Toast.makeText(RaffleInfoActivity.this,
+                        "Se generaron " + emailDataList.size() + " correos exitosamente",
+                        Toast.LENGTH_LONG).show();
+                //Milo, si usaste lo de java mail, creo que se pude usar de l asiguiente forma, DEPENDE DE COMO HICISTE TUS CLASES
+
+                //final int[] emailsSent = {0};
+                //final int totalEmails = emailDataList.size();
+
+                for (EmailGenerator.EmailData emailData : emailDataList) {
+                    Log.d("EmailGeneration", "Email para: " + emailData.getToEmail());
+                    Log.d("EmailGeneration", "Contenido: " + emailData.getEmailContent());
+
+
+                    // EJEMPLO DE USO SUPONIENDO QUE TIENE UNA CLASE QUE SE LLAME EMAILSENDER
+                    //EmailSender.sendEmail(
+                    //        emailData.getToEmail(),
+                    //        "Información del Intercambio Navideño",
+                    //        emailData.getEmailContent(),
+                    //        new EmailSender.EmailCallback() {
+                    //            @Override
+                    //            public void onSuccess() {
+                    //                emailsSent[0]++;
+                    //                if (emailsSent[0] == totalEmails) {
+                    //                    Toast.makeText(RaffleInfoActivity.this,
+                    //                            "Todos los correos fueron enviados exitosamente",
+                    //                            Toast.LENGTH_LONG).show();
+                    //                }
+                    //            }
+                    //        }
+                }
+
+                // El botón permanece deshabilitado después de generar los correos exitosamente
+
+            } else {
+                Toast.makeText(RaffleInfoActivity.this,
+                        "Error al generar los correos",
+                        Toast.LENGTH_LONG).show();
+
+                buttonGenerarEmail.setAlpha(1.0f);
+                buttonGenerarEmail.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#C5FDC3")));
+                setButtonState(buttonGenerarEmail, true);
             }
         });
     }
